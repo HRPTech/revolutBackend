@@ -5,6 +5,9 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.jooby.Err;
+import org.jooby.Status;
+
 import com.google.common.collect.Maps;
 import com.google.inject.Singleton;
 import com.revolut.model.Account;
@@ -18,7 +21,7 @@ public class AccountRepository {
 
 	public Account findAccount(final int id) {
 		final Optional<Account> account = Optional.ofNullable(accounts.get(id));
-		return account.orElseThrow(() -> new RuntimeException(ACCOUNT_NOT_FOUND));
+		return account.orElseThrow(() -> new Err(Status.BAD_REQUEST, ACCOUNT_NOT_FOUND));
 	}
 
 	public Account createAccount(final BigDecimal balance) {

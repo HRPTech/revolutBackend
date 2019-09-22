@@ -25,10 +25,6 @@ public class AccountController {
 	@POST
 	@Path("/create")
 	public Integer createAccount(final Request request) throws Exception {
-		try {
-			return accountService.createAccount(new BigDecimal(request.param("balance").value()));
-		} catch (final Exception exception) {
-			throw new Err(Status.BAD_REQUEST, exception.getMessage());
-		}
+		return accountService.createAccount(new BigDecimal(request.param("balance").value()));
 	}
 }

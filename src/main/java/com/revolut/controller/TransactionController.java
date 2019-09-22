@@ -26,11 +26,7 @@ public class TransactionController {
 	@POST
 	public Result transaction(final Request request) throws Exception {
 		final Transaction transaction = request.body(Transaction.class);
-		try {
-			transactionService.transfer(transaction);
-			return new Result().status(Status.OK);
-		} catch (final Exception exception) {
-			throw new Err(Status.BAD_REQUEST, exception.getMessage());
-		}
+		transactionService.transfer(transaction);
+		return new Result().status(Status.OK);
 	}
 }

@@ -4,6 +4,9 @@ import java.math.BigDecimal;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
+import org.jooby.Err;
+import org.jooby.Status;
+
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.revolut.model.Account;
@@ -34,22 +37,26 @@ public class TransferService {
 				repository.save(sender.balance(sender.getBalance().subtract(amount)));
 				repository.save(receiver.balance(receiver.getBalance().add(amount)));
 			} else {
-				throw new RuntimeException(TRANSFER_FAILED);
+				throw new Err(Status.SERVER_ERROR, TRANSFER_FAILED);
 			}
 		} catch (InterruptedException exception) {
-			throw new RuntimeException(TRANSFER_FAILED, exception);
+			throw new Err(Status.SERVER_ERROR, TRANSFER_FAILED);
 		} finally {
+			if (senderLock.isWriteLockedByCurrentThread()) {
 				senderLock.writeLock().unlock();
+			}
+			if (receiverLock.isWriteLockedByCurrentThread()) {
 				receiverLock.writeLock().unlock();
+			}
 		}
 	}
-	
-	private void validateBalance(final Account sender, final BigDecimal amount){
+
+	private void validateBalance(final Account sender, final BigDecimal amount) {
 		ReentrantReadWriteLock senderLock = sender.getLock();
 		try {
 			senderLock.readLock().lock();
 			if (amount.compareTo(sender.getBalance()) > 0) {
-				throw new RuntimeException(NO_FUNDS);
+				throw new Err(Status.BAD_REQUEST, NO_FUNDS);
 			}
 		} finally {
 			senderLock.readLock().unlock();
