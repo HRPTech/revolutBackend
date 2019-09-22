@@ -1,0 +1,28 @@
+apply plugin: 'java'
+apply plugin: 'application'
+apply plugin: 'groovy'
+
+
+
+repositories {
+   mavenCentral()
+}
+ext {
+    joobyVersion = '1.1.3'
+}
+
+dependencies {
+    compile 'com.google.guava:guava:20.0'   
+    testCompile 'junit:junit:4.12'
+	testCompile group: 'org.mockito', name: 'mockito-core', version: '2.1.0'
+
+    compile group: 'org.jooby', name: 'jooby', version: "${joobyVersion}"
+    compile group: 'org.jooby', name: 'jooby-jetty', version: "${joobyVersion}"
+    compile group: 'org.jooby', name: 'jooby-gson', version: "${joobyVersion}"  
+    testCompile 'io.rest-assured:rest-assured:4.1.1' 
+}
+
+mainClassName = 'com.revolut.Application'
+
+
+
