@@ -1,12 +1,11 @@
 package com.revolut.model;
 
 import java.math.BigDecimal;
-import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class Account {
 	private Integer accountId;
-	private ReadWriteLock lock = new ReentrantReadWriteLock();
+	private ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
 	private BigDecimal balance;
 
 	private Account() {
@@ -32,7 +31,7 @@ public class Account {
 		return accountId;
 	}
 
-	public final ReadWriteLock getLock() {
+	public final ReentrantReadWriteLock getLock() {
 		return lock;
 	}
 
@@ -64,4 +63,11 @@ public class Account {
 			return false;
 		return true;
 	}
+
+	@Override
+	public String toString() {
+		return "Account [accountId=" + accountId + ", balance=" + balance + "]";
+	}
+	
+	
 }

@@ -2,7 +2,7 @@ package com.revolut.service;
 
 import java.math.BigDecimal;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -23,26 +23,36 @@ public class TransferService {
 	}
 
 	public void transfer(final Account sender, final Account receiver, final BigDecimal amount) {
-		ReadWriteLock senderLock = sender.getLock();
-		ReadWriteLock receiverLock = receiver.getLock();
+		ReentrantReadWriteLock senderLock = sender.getLock();
+		ReentrantReadWriteLock receiverLock = receiver.getLock();
 
-		if (amount.compareTo(sender.getBalance()) > 0) {
-			throw new RuntimeException(NO_FUNDS);
-		}
+		validateBalance(sender, amount);
 
 		try {
-			if (senderLock.writeLock().tryLock(2, TimeUnit.SECONDS)) {
-				receiverLock.writeLock().tryLock(2, TimeUnit.SECONDS);
+			if (senderLock.writeLock().tryLock(1, TimeUnit.SECONDS)
+					&& receiverLock.writeLock().tryLock(1, TimeUnit.SECONDS)) {
+				repository.save(sender.balance(sender.getBalance().subtract(amount)));
+				repository.save(receiver.balance(receiver.getBalance().add(amount)));
+			} else {
+				throw new RuntimeException(TRANSFER_FAILED);
 			}
-
-			repository.save(sender.balance(sender.getBalance().subtract(amount)));
-			repository.save(receiver.balance(receiver.getBalance().add(amount)));
-
 		} catch (InterruptedException exception) {
 			throw new RuntimeException(TRANSFER_FAILED, exception);
 		} finally {
-			senderLock.writeLock().unlock();
-			receiverLock.writeLock().unlock();
+				senderLock.writeLock().unlock();
+				receiverLock.writeLock().unlock();
+		}
+	}
+	
+	private void validateBalance(final Account sender, final BigDecimal amount){
+		ReentrantReadWriteLock senderLock = sender.getLock();
+		try {
+			senderLock.readLock().lock();
+			if (amount.compareTo(sender.getBalance()) > 0) {
+				throw new RuntimeException(NO_FUNDS);
+			}
+		} finally {
+			senderLock.readLock().unlock();
 		}
 	}
 }
