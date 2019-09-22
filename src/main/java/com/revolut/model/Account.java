@@ -22,12 +22,12 @@ public class Account {
 	public static Account create(final Integer accountId) {
 		return new Account(accountId);
 	}
-	
-	public Account balance(final BigDecimal balance){
-		this.balance=balance;
+
+	public Account balance(final BigDecimal balance) {
+		this.balance = balance;
 		return this;
 	}
-			
+
 	public final Integer getAccountId() {
 		return accountId;
 	}

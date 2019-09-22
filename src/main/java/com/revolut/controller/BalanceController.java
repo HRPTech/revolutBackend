@@ -26,13 +26,12 @@ public class BalanceController {
 
 	@GET
 	@Path(":accountId")
-	public BigDecimal balance(@Named("accountId") final int accountId) throws Exception {		
+	public BigDecimal balance(@Named("accountId") final int accountId) throws Exception {
 		try {
-			return balanceService.getBalance(accountId);		
-			} catch (final Exception exception) {
-				throw new Err(Status.BAD_REQUEST, exception.getMessage());
-			}
+			return balanceService.getBalance(accountId);
+		} catch (final Exception exception) {
+			throw new Err(Status.BAD_REQUEST, exception.getMessage());
+		}
 	}
-	
-	
+
 }

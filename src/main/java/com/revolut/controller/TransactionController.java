@@ -32,5 +32,5 @@ public class TransactionController {
 		} catch (final Exception exception) {
 			throw new Err(Status.BAD_REQUEST, exception.getMessage());
 		}
-	}	
+	}
 }

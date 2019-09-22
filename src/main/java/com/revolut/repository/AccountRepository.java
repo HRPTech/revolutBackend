@@ -15,20 +15,20 @@ public class AccountRepository {
 	private final Map<Integer, Account> accounts = Maps.newConcurrentMap();
 
 	private final AtomicInteger ids = new AtomicInteger(1);
-		
+
 	public Account findAccount(final int id) {
 		final Optional<Account> account = Optional.ofNullable(accounts.get(id));
 		return account.orElseThrow(() -> new RuntimeException(ACCOUNT_NOT_FOUND));
 	}
-	
+
 	public Account createAccount(final BigDecimal balance) {
 		final int id = ids.getAndIncrement();
-		final Account newAccount =  Account.create(id).balance(balance);
+		final Account newAccount = Account.create(id).balance(balance);
 		accounts.put(id, newAccount);
 		return newAccount;
 	}
-	
-	public void save(final Account account){
-		accounts.put(account.getAccountId(),account);
+
+	public void save(final Account account) {
+		accounts.put(account.getAccountId(), account);
 	}
 }
