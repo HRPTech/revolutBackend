@@ -2,7 +2,9 @@ apply plugin: 'java'
 apply plugin: 'application'
 apply plugin: 'groovy'
 
-
+task wrapper(type: Wrapper) {
+    gradleVersion = '4.1'
+}
 
 repositories {
    mavenCentral()
