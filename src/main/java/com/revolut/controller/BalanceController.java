@@ -4,8 +4,6 @@ import java.math.BigDecimal;
 
 import javax.inject.Named;
 
-import org.jooby.Err;
-import org.jooby.Status;
 import org.jooby.mvc.GET;
 import org.jooby.mvc.Path;
 

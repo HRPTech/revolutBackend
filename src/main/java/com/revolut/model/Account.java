@@ -3,28 +3,27 @@ package com.revolut.model;
 import java.math.BigDecimal;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
+import org.jooby.Err;
+import org.jooby.Status;
+
 public class Account {
 	private Integer accountId;
 	private ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
 	private BigDecimal balance;
+	private static final String NO_FUNDS = "Insufficient funds available to process transaction";
 
-	private Account() {
-	}
-
-	private Account(final Integer accountId) {
+	public Account(final Integer accountId) {
 		super();
 		this.accountId = accountId;
 		this.lock = new ReentrantReadWriteLock();
 		this.balance = BigDecimal.ZERO;
 	}
 
-	public static Account create(final Integer accountId) {
-		return new Account(accountId);
-	}
-
-	public Account balance(final BigDecimal balance) {
+	public Account(final int accountId,final BigDecimal balance) {
+		super();
+		this.accountId = accountId;
+		this.lock = new ReentrantReadWriteLock();
 		this.balance = balance;
-		return this;
 	}
 
 	public final Integer getAccountId() {
@@ -36,7 +35,33 @@ public class Account {
 	}
 
 	public final BigDecimal getBalance() {
-		return balance;
+		this.lock.readLock().lock();
+		try {
+			return balance;
+		} finally {
+			this.lock.readLock().unlock();
+		}
+	}
+
+	public final void addAmount(final BigDecimal amount) {
+		this.lock.writeLock().lock();
+		try {
+			this.balance = this.balance.add(amount);
+		} finally {
+			this.lock.writeLock().unlock();
+		}
+	}
+
+	public final void withdrawAmount(final BigDecimal amount) {
+		this.lock.writeLock().lock();
+		try {
+			if (amount.compareTo(this.balance) > 0) {
+				throw new Err(Status.BAD_REQUEST, NO_FUNDS);
+			}
+			this.balance = this.balance.subtract(amount);
+		} finally {
+			this.lock.writeLock().unlock();
+		}
 	}
 
 	@Override
@@ -68,6 +93,5 @@ public class Account {
 	public String toString() {
 		return "Account [accountId=" + accountId + ", balance=" + balance + "]";
 	}
-	
-	
+
 }

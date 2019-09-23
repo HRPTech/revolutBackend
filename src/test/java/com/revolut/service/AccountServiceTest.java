@@ -14,7 +14,7 @@ import com.revolut.repository.AccountRepository;
 public class AccountServiceTest {
 	private AccountRepository repository = mock(AccountRepository.class);
 	private AccountService service = new AccountService(repository);
-	private Account account1 = Account.create(1).balance(BigDecimal.ONE);
+	private Account account1 = new Account(1,BigDecimal.ONE);
 
 	@Test
 	public void testCreateAccount() {

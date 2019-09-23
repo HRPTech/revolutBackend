@@ -26,7 +26,7 @@ public class AccountRepository {
 
 	public Account createAccount(final BigDecimal balance) {
 		final int id = ids.getAndIncrement();
-		final Account newAccount = Account.create(id).balance(balance);
+		final Account newAccount = new Account(id,balance);
 		accounts.put(id, newAccount);
 		return newAccount;
 	}

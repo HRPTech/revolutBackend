@@ -2,9 +2,7 @@ package com.revolut.controller;
 
 import java.math.BigDecimal;
 
-import org.jooby.Err;
 import org.jooby.Request;
-import org.jooby.Status;
 import org.jooby.mvc.POST;
 import org.jooby.mvc.Path;
 

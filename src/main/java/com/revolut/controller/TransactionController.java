@@ -1,6 +1,5 @@
 package com.revolut.controller;
 
-import org.jooby.Err;
 import org.jooby.Request;
 import org.jooby.Result;
 import org.jooby.Status;

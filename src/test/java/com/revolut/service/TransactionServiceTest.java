@@ -17,8 +17,8 @@ public class TransactionServiceTest {
 	private AccountRepository repository = mock(AccountRepository.class);
 	private TransferService moneyTransferService = mock(TransferService.class);
 	private TransactionService service = new TransactionService(repository, moneyTransferService);
-	private Account account1 = Account.create(1).balance(BigDecimal.ONE);
-	private Account account2 = Account.create(2).balance(BigDecimal.ONE);
+	private Account account1 = new Account(1,BigDecimal.ONE);
+	private Account account2 = new Account(2,BigDecimal.ONE);
 
 	@Test
 	public void testTransfer() {
