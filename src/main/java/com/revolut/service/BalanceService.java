@@ -1,7 +1,6 @@
 package com.revolut.service;
 
 import java.math.BigDecimal;
-import java.util.concurrent.locks.ReadWriteLock;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -21,14 +20,7 @@ public class BalanceService {
 
 	public BigDecimal getBalance(final Integer accountId) {
 		final Account account = repository.findAccount(accountId);
-		ReadWriteLock lock = account.getLock();
-
-		lock.readLock().lock();
-		try {
-			return account.getBalance();
-		} finally {
-			lock.readLock().unlock();
-		}
+		return account.getBalance();		
 	}
 
 }

@@ -31,7 +31,6 @@ public class TransferService {
 			} else {
 				throw new Err(Status.SERVER_ERROR, TRANSFER_FAILED);
 			}
-
 		} finally {
 			senderLock.writeLock().unlock();
 			receiverLock.writeLock().unlock();
